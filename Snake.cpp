@@ -23,12 +23,10 @@ Facing Snake::get_snake_facing()
 
 bool Snake::check_for_snake(int row, int col)
 {
-    for(int body_part=0; body_part<SnakeBody.size(); body_part++)
+    for(int cell : SnakeBody)
     {
-        if( row * MAP_SIZE + col == SnakeBody[body_part])
-        {
+        if (row * MAP_SIZE + col == cell)
             return true;
-        }
     }
     return false;
 }

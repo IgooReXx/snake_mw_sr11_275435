@@ -3,13 +3,10 @@
 //
 
 #include "SnakeBoard.h"
-#define MAP_SIZE 10
 #include <iostream>
 
 SnakeBoard::SnakeBoard(Snake &s1) : snake(s1)
 {
-    apple.is_spawned=false;
-    apple.position = -1;
     place_apple(0, 4);
     walls.push_back(3*MAP_SIZE+5);
 }
@@ -46,10 +43,6 @@ void SnakeBoard::update()
     snake.update_snake();
 }
 
-int SnakeBoard::get_apple_pos()
-{
-    return apple.position;
-}
 
 void SnakeBoard::place_apple(int row, int col)
 {
@@ -68,7 +61,7 @@ bool SnakeBoard::check_for_apple(int row, int col)
     return false;
 }
 
-void SnakeBoard::remove_apple(int row, int col)
+void SnakeBoard::remove_apple()
 {
     apple.position = -1;
     apple.is_spawned = false;
