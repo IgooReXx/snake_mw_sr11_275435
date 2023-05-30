@@ -7,11 +7,13 @@
 #include <vector>
 
 enum Facing {UP, LEFT, DOWN, RIGHT};
+enum Status {ALIVE, DEAD};
 
 class Snake {
-
     std::vector<int> SnakeBody;
     Facing facing;
+    Status status;
+    bool apple_eaten;
 
 public:
 
@@ -21,6 +23,11 @@ public:
     bool check_for_snake(int row, int col);
     int get_snake_next_pos();
     void update_snake();
+    Status get_snake_status();
+    void kill_snake();
+    void set_apple_eaten();
+    void turn(Facing f);
+
 
 };
 
