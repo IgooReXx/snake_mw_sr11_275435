@@ -52,6 +52,7 @@ void Snake::update_snake()
     SnakeBody.emplace(SnakeBody.begin(), get_snake_next_pos());
     if(!apple_eaten)
         SnakeBody.pop_back();
+    apple_eaten = false;
 }
 
 void Snake::kill_snake()
@@ -84,4 +85,9 @@ void Snake::turn(Facing f)
                 facing = f;
             break;
     }
+}
+
+int Snake::get_snake_tail()
+{
+   return SnakeBody.back();
 }

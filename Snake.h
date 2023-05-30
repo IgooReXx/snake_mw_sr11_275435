@@ -27,7 +27,7 @@ public:
     void kill_snake();
     void set_apple_eaten();
     void turn(Facing f);
-
+    int get_snake_tail();
 
 };
 

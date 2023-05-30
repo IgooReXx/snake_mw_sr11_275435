@@ -3,14 +3,17 @@
 //
 
 #include "SnakeBoard.h"
-#define MAP_SIZE 10
 #include <iostream>
+#include <chrono>
+#include <algorithm>
+#include <random>
 
 
 SnakeBoard::SnakeBoard(Snake &s) : snake(s)
 {
     place_apple(0, 4);
     walls.push_back(3*MAP_SIZE+5);
+    wasUpdated = false;
 }
 
 void SnakeBoard::debug_display()
@@ -42,13 +45,13 @@ void SnakeBoard::debug_display()
 
 void SnakeBoard::update()
 {
-    if(clock.getElapsedTime() >= sf::milliseconds(2000))
+    if(clock.getElapsedTime() >= sf::milliseconds(200))
     {
         collision_logic();
         snake.update_snake();
         clock.restart();
+        wasUpdated = true;
     }
-
 }
 
 int SnakeBoard::get_apple_pos()
@@ -74,10 +77,42 @@ bool SnakeBoard::check_for_apple(int row, int col)
     return false;
 }
 
-void SnakeBoard::remove_apple()
+void SnakeBoard::replace_apple()
 {
-    apple.pop_back();
+    std::vector<int> availableCells;
 
+    for(int cell=0; cell<MAP_SIZE*MAP_SIZE; ++cell)
+    {
+        availableCells.push_back(cell);
+    }
+
+    for(int row=0; row<MAP_SIZE; ++row)
+    {
+        for(int col=0; col<MAP_SIZE; ++col)
+        {
+            if(snake.check_for_snake(row, col))
+            {
+                std::remove(availableCells.begin(), availableCells.end(), row*MAP_SIZE+col);
+                availableCells.pop_back();
+            }
+        }
+    }
+    for(int cell : walls)
+    {
+        std::remove(availableCells.begin(), availableCells.end(), cell);
+        availableCells.pop_back();
+    }
+
+    for(int cell : apple)
+    {
+        std::remove(availableCells.begin(), availableCells.end(), cell);
+        availableCells.pop_back();
+    }
+
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    shuffle (availableCells.begin(), availableCells.end(), std::default_random_engine(seed)); // Inicjacja 3. argumentu https://cplusplus.com/reference/algorithm/shuffle/
+
+    apple.front() = availableCells.front();
 }
 
 bool SnakeBoard::check_for_wall(int row, int col)
@@ -103,7 +138,7 @@ bool SnakeBoard::snake_collision()
 {
     Cell nextCell = convert_cell(snake.get_snake_next_pos());
 
-    if(snake.get_snake_next_pos() == snake.check_for_snake(nextCell.row, nextCell.col))
+    if(snake.check_for_snake(nextCell.row, nextCell.col) and nextCell.row*MAP_SIZE+nextCell.col != snake.get_snake_tail())
         return true;
     return false;
 }
@@ -132,24 +167,41 @@ bool SnakeBoard::map_boundary_collision()
     if(currentCell.col==0 or currentCell.col == MAP_SIZE-1 or currentCell.row == 0 or currentCell.row == MAP_SIZE-1)
     {
         Cell nextCell = convert_cell(snake.get_snake_next_pos());
-        if(nextCell.row == currentCell.row+1 and nextCell.col == 0)
+        if(nextCell.row < 0 or nextCell.col < 0)
             return true;
-        if(nextCell.row == currentCell.row-1 and nextCell.col == MAP_SIZE-1)
+
+        if(nextCell.row > MAP_SIZE-1)
             return true;
-        if(nextCell.row <= 0)
+        if(currentCell.col == 0 and nextCell.col == MAP_SIZE-1)
             return true;
-        if(nextCell.row >= MAP_SIZE-1)
+        if(currentCell.col == MAP_SIZE-1 and nextCell.col == 0)
             return true;
     }
     return false;
 }
 
+
 void SnakeBoard::collision_logic()
 {
+    if(snake_collision())
+        snake.kill_snake();
     if(map_boundary_collision())
         snake.kill_snake();
     if(wall_collision())
         snake.kill_snake();
     if(apple_collision())
+    {
         snake.set_apple_eaten();
+        replace_apple();
+    }
+}
+
+bool SnakeBoard::get_wasUpdated()
+{
+    return wasUpdated;
+}
+
+void SnakeBoard::reset_wasUpdated()
+{
+    wasUpdated = false;
 }
