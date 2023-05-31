@@ -11,29 +11,7 @@ SnakeSFMLController::SnakeSFMLController(Snake &s1, SnakeBoard &b1, SnakeSFMLVie
 
 void SnakeSFMLController::play(sf::Event &event)
 {
-    Facing f = snake.get_snake_facing();
-    switch(event.key.code)
-    {
-        case sf::Keyboard::Up:
-            f = UP;
-            std::cerr << "UP";
-            break;
-        case sf::Keyboard::Down:
-            f = DOWN;
-            std::cerr << "DOWN";
-            break;
-        case sf::Keyboard::Left:
-            f = LEFT;
-            std::cerr << "LEFT";
-            break;
-        case sf::Keyboard::Right:
-            f = RIGHT;
-            std::cerr << "RIGHT";
-            break;
-        default:
-            f = snake.get_snake_facing();
-    }
-    snake.turn(f);
+    snake.turn(choose_facing(event));
     keyRegistered=true;
 }
 
@@ -45,4 +23,27 @@ bool SnakeSFMLController::get_keyRegistered()
 void SnakeSFMLController::reset_keyRegistered()
 {
     keyRegistered=false;
+}
+
+Facing SnakeSFMLController::choose_facing(sf::Event &event)
+{
+    Facing f;
+    switch(event.key.code)
+    {
+        case sf::Keyboard::Up:
+            f = UP;
+            break;
+        case sf::Keyboard::Down:
+            f = DOWN;
+            break;
+        case sf::Keyboard::Left:
+            f = LEFT;
+            break;
+        case sf::Keyboard::Right:
+            f = RIGHT;
+            break;
+        default:
+            f = snake.get_snake_facing();
+    }
+    return f;
 }

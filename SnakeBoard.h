@@ -14,12 +14,18 @@ struct Cell {
     int col;
 };
 
+enum GameStatus {RUNNING, MENU};
+
 class SnakeBoard {
 
     Snake &snake;
     std::vector<int> walls;
     std::vector<int> apple;
     sf::Clock clock;
+    bool wasUpdated;
+    int points;
+    GameStatus status;
+
     void place_apple(int row, int col);
     void replace_apple();
     bool wall_collision();
@@ -29,7 +35,12 @@ class SnakeBoard {
     Cell convert_cell(int cell);
     void collision_logic();
     int get_apple_pos();
-    bool wasUpdated;
+    void place_walls();
+    void remove_occupied_cells(std::vector<int> &availableCells);
+    void remove_snake_cells(std::vector<int> &availableCells);
+    void remove_wall_cells(std::vector<int> &availableCells);
+    void remove_apple_cells(std::vector<int> &availableCells);
+
 
 public:
 
@@ -40,6 +51,7 @@ public:
     bool check_for_apple(int row, int col);
     bool get_wasUpdated();
     void reset_wasUpdated();
+    int get_points();
 };
 
 

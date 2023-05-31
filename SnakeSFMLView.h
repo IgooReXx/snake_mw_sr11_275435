@@ -11,6 +11,12 @@
 #include "Snake.h"
 #include "SnakeBoard.h"
 
+struct TxSp
+{
+    sf::Texture tx;
+    sf::Sprite sp;
+};
+
 
 class SnakeSFMLView {
 
@@ -22,8 +28,25 @@ class SnakeSFMLView {
     sf::RectangleShape appleCell;
     sf::RectangleShape snakeCell;
 
+    TxSp end_screen_win;
+    TxSp end_screen_loss;
+    TxSp snakeHead;
+    TxSp snakeBody;
+    TxSp snakeTail;
+    TxSp grass;
+    TxSp wall;
+    TxSp apple;
+
+
     int cellWidth;
     int cellHeight;
+
+    void load_all_txsp();
+    void display_end_screen(sf::RenderWindow &win);
+    void set_shape_size();
+    void set_shape_colour();
+    void set_shape_position();
+    void draw_object(int row, int col, int x_pos, int y_pos, sf::RenderWindow &win);
 
 public:
 

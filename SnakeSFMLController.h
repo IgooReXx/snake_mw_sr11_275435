@@ -15,8 +15,9 @@ class SnakeSFMLController {
     SnakeBoard &board;
     SnakeSFMLView &view;
     sf::RenderWindow &window;
-
     bool keyRegistered;
+
+    Facing choose_facing(sf::Event &event);
 
 public:
 

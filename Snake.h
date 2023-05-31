@@ -22,8 +22,8 @@ public:
     Facing get_snake_facing();
     bool check_for_snake(int row, int col);
     int get_snake_next_pos();
-    void update_snake();
-    Status get_snake_status();
+    void update();
+    Status get_status();
     void kill_snake();
     void set_apple_eaten();
     void turn(Facing f);

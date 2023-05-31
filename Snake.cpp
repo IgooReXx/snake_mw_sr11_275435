@@ -8,6 +8,7 @@
 Snake::Snake()
 {
     SnakeBody.push_back(4 * MAP_SIZE + 4);
+    SnakeBody.push_back(4 * MAP_SIZE + 3);
     facing = UP;
     status = ALIVE;
     apple_eaten = false;
@@ -47,7 +48,7 @@ int Snake::get_snake_next_pos()
     return get_snake_head() + MAP_SIZE;
 }
 
-void Snake::update_snake()
+void Snake::update()
 {
     SnakeBody.emplace(SnakeBody.begin(), get_snake_next_pos());
     if(!apple_eaten)
@@ -60,7 +61,7 @@ void Snake::kill_snake()
     status = DEAD;
 }
 
-Status Snake::get_snake_status()
+Status Snake::get_status()
 {
     return status;
 }

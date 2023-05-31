@@ -12,8 +12,10 @@
 SnakeBoard::SnakeBoard(Snake &s) : snake(s)
 {
     place_apple(0, 4);
-    walls.push_back(3*MAP_SIZE+5);
+    place_walls();
     wasUpdated = false;
+    points = 600;
+    status = RUNNING;
 }
 
 void SnakeBoard::debug_display()
@@ -48,9 +50,11 @@ void SnakeBoard::update()
     if(clock.getElapsedTime() >= sf::milliseconds(200))
     {
         collision_logic();
-        snake.update_snake();
+        snake.update();
         clock.restart();
         wasUpdated = true;
+        if(points > 0)
+            points -=1;
     }
 }
 
@@ -86,32 +90,9 @@ void SnakeBoard::replace_apple()
         availableCells.push_back(cell);
     }
 
-    for(int row=0; row<MAP_SIZE; ++row)
-    {
-        for(int col=0; col<MAP_SIZE; ++col)
-        {
-            if(snake.check_for_snake(row, col))
-            {
-                std::remove(availableCells.begin(), availableCells.end(), row*MAP_SIZE+col);
-                availableCells.pop_back();
-            }
-        }
-    }
-    for(int cell : walls)
-    {
-        std::remove(availableCells.begin(), availableCells.end(), cell);
-        availableCells.pop_back();
-    }
-
-    for(int cell : apple)
-    {
-        std::remove(availableCells.begin(), availableCells.end(), cell);
-        availableCells.pop_back();
-    }
-
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     shuffle (availableCells.begin(), availableCells.end(), std::default_random_engine(seed)); // Inicjacja 3. argumentu https://cplusplus.com/reference/algorithm/shuffle/
-
+    remove_occupied_cells(availableCells);
     apple.front() = availableCells.front();
 }
 
@@ -192,6 +173,7 @@ void SnakeBoard::collision_logic()
     if(apple_collision())
     {
         snake.set_apple_eaten();
+        points +=100;
         replace_apple();
     }
 }
@@ -204,4 +186,58 @@ bool SnakeBoard::get_wasUpdated()
 void SnakeBoard::reset_wasUpdated()
 {
     wasUpdated = false;
+}
+
+int SnakeBoard::get_points()
+{
+    return points;
+}
+
+void SnakeBoard::remove_occupied_cells(std::vector<int> &availableCells)
+{
+    remove_snake_cells(availableCells);
+    remove_apple_cells(availableCells);
+    remove_wall_cells(availableCells);
+}
+void SnakeBoard::remove_snake_cells(std::vector<int> &availableCells)
+{
+    for(int row=0; row<MAP_SIZE; ++row)
+    {
+        for(int col=0; col<MAP_SIZE; ++col)
+        {
+            if(snake.check_for_snake(row, col))
+            {
+                std::remove(availableCells.begin(), availableCells.end(), row*MAP_SIZE+col);
+                availableCells.pop_back();
+            }
+        }
+    }
+}
+void SnakeBoard::remove_wall_cells(std::vector<int> &availableCells)
+{
+    for(int cell : walls)
+    {
+        std::remove(availableCells.begin(), availableCells.end(), cell);
+        availableCells.pop_back();
+    }
+}
+void SnakeBoard::remove_apple_cells(std::vector<int> &availableCells)
+{
+    for(int cell : apple)
+    {
+        std::remove(availableCells.begin(), availableCells.end(), cell);
+        availableCells.pop_back();
+    }
+}
+
+void SnakeBoard::place_walls()
+{
+    walls.push_back(11);
+    walls.push_back(12);
+    walls.push_back(21);
+    walls.push_back(28);
+    walls.push_back(71);
+    walls.push_back(78);
+    walls.push_back(87);
+    walls.push_back(88);
 }
