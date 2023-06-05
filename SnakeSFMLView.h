@@ -31,12 +31,14 @@ class SnakeSFMLView {
     TxSp end_screen_win;
     TxSp end_screen_loss;
     TxSp snakeHead;
-    TxSp snakeBody;
+    TxSp snakeBodyHorizontal;
+    TxSp snakeBodyVertical;
     TxSp snakeTail;
+    TxSp snakeConnector;
     TxSp grass;
-    TxSp wall;
+    TxSp wall_1;
+    TxSp wall_2;
     TxSp apple;
-
 
     int cellWidth;
     int cellHeight;
@@ -46,7 +48,15 @@ class SnakeSFMLView {
     void set_shape_size();
     void set_shape_colour();
     void set_shape_position();
-    void draw_object(int row, int col, int x_pos, int y_pos, sf::RenderWindow &win);
+    void draw_object(int x_pos, int y_pos, sf::RenderWindow &win, sf::Sprite objectSprite);
+    void draw_snake(int row, int col, int x_pos, int y_pos, sf::RenderWindow &win);
+    void draw_wall(int row, int col, int x_pos, int y_pos, sf::RenderWindow &win);
+    void draw_apple(int row, int col, int x_pos, int y_pos, sf::RenderWindow &win);
+    void draw_grass(int x_pos, int y_pos, sf::RenderWindow &win);
+    void draw_logic(int row, int col, int x_pos, int y_pos, sf::RenderWindow &win);
+    void draw_snakeBody(int cell, int x_pos, int y_pos, sf::RenderWindow &win);
+    void draw_connector(int x_pos, int y_pos, sf::RenderWindow &win, int currentCell, int previousCell, int nextCell);
+
 
 public:
 

@@ -167,9 +167,9 @@ void SnakeBoard::collision_logic()
     if(snake_collision())
         snake.kill_snake();
     if(map_boundary_collision())
-        snake.kill_snake();
+    {/*snake.kill_snake();*/}
     if(wall_collision())
-        snake.kill_snake();
+    {/*snake.kill_snake();*/}
     if(apple_collision())
     {
         snake.set_apple_eaten();
@@ -201,16 +201,10 @@ void SnakeBoard::remove_occupied_cells(std::vector<int> &availableCells)
 }
 void SnakeBoard::remove_snake_cells(std::vector<int> &availableCells)
 {
-    for(int row=0; row<MAP_SIZE; ++row)
+    for(int cell : snake.get_snakeBody())
     {
-        for(int col=0; col<MAP_SIZE; ++col)
-        {
-            if(snake.check_for_snake(row, col))
-            {
-                std::remove(availableCells.begin(), availableCells.end(), row*MAP_SIZE+col);
-                availableCells.pop_back();
-            }
-        }
+        std::remove(availableCells.begin(), availableCells.end(), cell);
+        availableCells.pop_back();
     }
 }
 void SnakeBoard::remove_wall_cells(std::vector<int> &availableCells)
