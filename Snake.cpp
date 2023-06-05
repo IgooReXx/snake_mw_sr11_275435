@@ -92,3 +92,8 @@ int Snake::get_snake_tail()
 {
    return snakeBody.back();
 }
+
+
+const std::vector<int>& Snake::get_snakeBody() {
+    return snakeBody;
+}

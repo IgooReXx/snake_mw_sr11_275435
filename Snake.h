@@ -28,6 +28,7 @@ public:
     void set_apple_eaten();
     void turn(Facing f);
     int get_snake_tail();
+    const std::vector<int>& get_snakeBody();
 
 };
 
