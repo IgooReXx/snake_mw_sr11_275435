@@ -7,8 +7,8 @@
 
 Snake::Snake()
 {
-    SnakeBody.push_back(4 * MAP_SIZE + 4);
-    SnakeBody.push_back(4 * MAP_SIZE + 3);
+    snakeBody.push_back(4 * MAP_SIZE + 4);
+    snakeBody.push_back(4 * MAP_SIZE + 3);
     facing = UP;
     status = ALIVE;
     apple_eaten = false;
@@ -16,7 +16,7 @@ Snake::Snake()
 
 int Snake::get_snake_head()
 {
-    return SnakeBody.front();
+    return snakeBody.front();
 }
 
 Facing Snake::get_snake_facing()
@@ -26,7 +26,7 @@ Facing Snake::get_snake_facing()
 
 bool Snake::check_for_snake(int row, int col)
 {
-    for(int body_part : SnakeBody)
+    for(int body_part : snakeBody)
     {
         if( row * MAP_SIZE + col == body_part)
         {
@@ -50,9 +50,9 @@ int Snake::get_snake_next_pos()
 
 void Snake::update()
 {
-    SnakeBody.emplace(SnakeBody.begin(), get_snake_next_pos());
+    snakeBody.emplace(snakeBody.begin(), get_snake_next_pos());
     if(!apple_eaten)
-        SnakeBody.pop_back();
+        snakeBody.pop_back();
     apple_eaten = false;
 }
 
@@ -90,5 +90,5 @@ void Snake::turn(Facing f)
 
 int Snake::get_snake_tail()
 {
-   return SnakeBody.back();
+   return snakeBody.back();
 }

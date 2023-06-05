@@ -43,6 +43,7 @@ int main() {
         window.clear();
         view.draw(window);
         window.display();
+
     }
 
     return 0;

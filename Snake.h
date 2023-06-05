@@ -10,7 +10,7 @@ enum Facing {UP, LEFT, DOWN, RIGHT};
 enum Status {ALIVE, DEAD};
 
 class Snake {
-    std::vector<int> SnakeBody;
+    std::vector<int> snakeBody;
     Facing facing;
     Status status;
     bool apple_eaten;

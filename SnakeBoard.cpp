@@ -11,11 +11,12 @@
 
 SnakeBoard::SnakeBoard(Snake &s) : snake(s)
 {
-    place_apple(0, 4);
     place_walls();
     wasUpdated = false;
     points = 600;
     status = RUNNING;
+    apple.push_back(-1);
+    replace_apple();
 }
 
 void SnakeBoard::debug_display()
@@ -90,9 +91,9 @@ void SnakeBoard::replace_apple()
         availableCells.push_back(cell);
     }
 
+    remove_occupied_cells(availableCells);
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     shuffle (availableCells.begin(), availableCells.end(), std::default_random_engine(seed)); // Inicjacja 3. argumentu https://cplusplus.com/reference/algorithm/shuffle/
-    remove_occupied_cells(availableCells);
     apple.front() = availableCells.front();
 }
 
@@ -207,8 +208,10 @@ void SnakeBoard::remove_snake_cells(std::vector<int> &availableCells)
         {
             if(snake.check_for_snake(row, col))
             {
-                std::remove(availableCells.begin(), availableCells.end(), row*MAP_SIZE+col);
-                availableCells.pop_back();
+                std::vector<int>::iterator end = availableCells.end();
+                std::vector<int>::iterator newEnd = std::remove(availableCells.begin(), availableCells.end(), row*MAP_SIZE+col);
+                if(end != newEnd)
+                    availableCells.pop_back();
             }
         }
     }
@@ -217,16 +220,20 @@ void SnakeBoard::remove_wall_cells(std::vector<int> &availableCells)
 {
     for(int cell : walls)
     {
-        std::remove(availableCells.begin(), availableCells.end(), cell);
-        availableCells.pop_back();
+        std::vector<int>::iterator end = availableCells.end();
+        std::vector<int>::iterator newEnd = std::remove(availableCells.begin(), availableCells.end(), cell);
+        if(end != newEnd)
+            availableCells.pop_back();
     }
 }
 void SnakeBoard::remove_apple_cells(std::vector<int> &availableCells)
 {
     for(int cell : apple)
     {
-        std::remove(availableCells.begin(), availableCells.end(), cell);
-        availableCells.pop_back();
+        std::vector<int>::iterator end = availableCells.end();
+        std::vector<int>::iterator newEnd = std::remove(availableCells.begin(), availableCells.end(), cell);
+        if(end!=newEnd)
+            availableCells.pop_back();
     }
 }
 

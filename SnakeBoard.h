@@ -34,7 +34,6 @@ class SnakeBoard {
     bool map_boundary_collision();
     Cell convert_cell(int cell);
     void collision_logic();
-    int get_apple_pos();
     void place_walls();
     void remove_occupied_cells(std::vector<int> &availableCells);
     void remove_snake_cells(std::vector<int> &availableCells);
@@ -52,6 +51,7 @@ public:
     bool get_wasUpdated();
     void reset_wasUpdated();
     int get_points();
+    int get_apple_pos();
 };
 
 
