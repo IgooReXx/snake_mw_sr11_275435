@@ -10,10 +10,6 @@ SnakeSFMLView::SnakeSFMLView(Snake &s1, SnakeBoard &b1) : snake(s1), board(b1)
     cellWidth = WINDOW_WIDTH/MAP_SIZE;
     cellHeight = WINDOW_HEIGHT/MAP_SIZE;
 
-    set_shape_size();
-    set_shape_colour();
-    set_shape_position();
-
     load_all_txsp();
 }
 
@@ -53,13 +49,6 @@ void SnakeSFMLView::load_all_txsp()
         exit(1);
     snakeHead.sp.setTexture(snakeHead.tx);
 
-    if(!snakeBodyHorizontal.tx.loadFromFile("../textures/karpBody.png", sf::IntRect(0, 0, 80, 60)))
-        exit(1);
-    snakeBodyHorizontal.sp.setTexture(snakeBodyHorizontal.tx);
-
-    snakeBodyVertical = snakeBodyHorizontal;
-    snakeBodyVertical.sp.setRotation(-90);
-
     if(!snakeTail.tx.loadFromFile("../textures/karpTail.png", sf::IntRect(0, 0, 80, 60)))
         exit(1);
     snakeTail.sp.setTexture(snakeTail.tx);
@@ -80,10 +69,9 @@ void SnakeSFMLView::load_all_txsp()
         exit(1);
     apple.sp.setTexture(apple.tx);
 
-    if(!snakeConnector.tx.loadFromFile("../textures/connector.png", sf::IntRect(0, 0, 80, 60)))
+    if(!snakeBody.tx.loadFromFile("../textures/karpBody.png", sf::IntRect(0, 0, 80, 60)))
         exit(1);
-    snakeConnector.sp.setTexture(snakeConnector.tx);
-
+    snakeBody.sp.setTexture(snakeBody.tx);
 }
 
 void SnakeSFMLView::display_end_screen(sf::RenderWindow &win)
@@ -94,30 +82,6 @@ void SnakeSFMLView::display_end_screen(sf::RenderWindow &win)
     win.draw(displayed_end_screen->sp);
 }
 
-void SnakeSFMLView::set_shape_size()
-{
-    emptyCell.setSize(sf::Vector2f(cellWidth, cellHeight));
-    wallCell.setSize(sf::Vector2f(cellWidth, cellHeight));
-    appleCell.setSize(sf::Vector2f(cellWidth, cellHeight));
-    snakeCell.setSize(sf::Vector2f(cellWidth, cellHeight));
-}
-
-void SnakeSFMLView::set_shape_colour()
-{
-    emptyCell.setFillColor(sf::Color(19, 130, 7));
-    wallCell.setFillColor(sf::Color::Blue);
-    appleCell.setFillColor(sf::Color::Red);
-    snakeCell.setFillColor(sf::Color::Cyan);
-}
-
-void SnakeSFMLView::set_shape_position()
-{
-    emptyCell.setPosition(0, 0);
-    wallCell.setPosition(0, 0);
-    appleCell.setPosition(0, 0);
-    snakeCell.setPosition(0, 0);
-}
-
 void SnakeSFMLView::draw_logic(int row, int col, int x_pos, int y_pos, sf::RenderWindow &win)
 {
     draw_grass(x_pos, y_pos, win);
@@ -126,125 +90,133 @@ void SnakeSFMLView::draw_logic(int row, int col, int x_pos, int y_pos, sf::Rende
     draw_snake(row, col, x_pos, y_pos, win);
 }
 
-void SnakeSFMLView::draw_object(int x_pos, int y_pos, sf::RenderWindow &win, sf::Sprite objectSprite)
+void SnakeSFMLView::draw_object(int x_pos, int y_pos, sf::RenderWindow &win, sf::Sprite objectSprite, float rotationInDegrees, float factorX, float factorY)
 {
+    objectSprite.setRotation(rotationInDegrees);
+    objectSprite.setScale(factorX, factorY);
     objectSprite.setPosition(x_pos, y_pos);
     win.draw(objectSprite);
+}
 
+void SnakeSFMLView::snakeHead_facing(float &rotationInDegrees, float &factorX, float &factorY)
+{
+    switch (snake.get_snake_facing())
+    {
+        case UP: {
+            rotationInDegrees = 90;
+            factorX=-1.0f;
+            factorY=80.0f/60.0f*1.0f;
+            break;
+        }
+        case DOWN: {
+            rotationInDegrees = 90;
+            factorX=1.0f;
+            factorY=80.0f/60.0f*-1.0f;
+            break;
+        }
+        case RIGHT: {
+            rotationInDegrees = 0;
+            factorX=1.0f;
+            factorY=1.0f;
+            break;
+        }
+        case LEFT: {
+            rotationInDegrees = 0;
+            factorX=-1.0f;
+            factorY=1.0f;
+            break;
+        }
+    }
 }
 
 void SnakeSFMLView::draw_snake(int row, int col, int x_pos, int y_pos, sf::RenderWindow &win)
 {
     snakeHead.sp.setOrigin(80/2, 60/2);
     snakeTail.sp.setOrigin(80/2, 60/2);
-    snakeBodyHorizontal.sp.setOrigin(80/2, 60/2);
-    snakeBodyVertical.sp.setOrigin(80/2, 60/2);
-    snakeConnector.sp.setOrigin(80/2, 60/2);
+    snakeBody.sp.setOrigin(80/2, 60/2);
     x_pos+=80/2;
     y_pos+=60/2;
-    switch (snake.get_snake_facing()) {
-        case UP: {
-            snakeHead.sp.setRotation(90);
-            snakeHead.sp.setScale(-1.0f, -1.0f);
-            break;
-        }
-        case DOWN: {
-            snakeHead.sp.setRotation(90);
-            snakeHead.sp.setScale(1.0f, -1.0f);
-            break;
-        }
-        case RIGHT: {
-            snakeHead.sp.setRotation(0);
-            snakeHead.sp.setScale(1.0f, 1.0f);
-            break;
-        }
-        case LEFT:{
-            snakeHead.sp.setRotation(0);
-            snakeHead.sp.setScale(-1.0f, 1.0f);
-            break;
-        }
-    }
+    float headRotation;
+    float headFactorX, headFactorY;
+    snakeHead_facing(headRotation, headFactorX, headFactorY);
     for(int cell : snake.get_snakeBody())
     {
         if(cell == snake.get_snake_head() && cell == row*MAP_SIZE+col)
-            draw_object(x_pos, y_pos, win,snakeHead.sp);
+            draw_object(x_pos, y_pos, win,snakeHead.sp, headRotation, headFactorX, headFactorY);
         else if(cell == snake.get_snake_tail() && cell == row*MAP_SIZE+col)
-            draw_object(x_pos, y_pos, win,snakeTail.sp);
+            draw_snakeTail(x_pos, y_pos, win);
         else if (cell == row*MAP_SIZE+col)
-            draw_snakeBody(cell, x_pos, y_pos, win);
+            draw_snakeBody(x_pos, y_pos, win);
+
     }
+
 }
 void SnakeSFMLView::draw_wall(int row, int col, int x_pos, int y_pos, sf::RenderWindow &win)
 {
     if(board.check_for_wall(row, col))
     {
         if((row*MAP_SIZE+col) % 2 == 0)
-            draw_object(x_pos, y_pos, win,wall_1.sp);
+            draw_object(x_pos, y_pos, win,wall_1.sp, 0, 1, 1);
         else
-            draw_object(x_pos, y_pos, win,wall_2.sp);
+            draw_object(x_pos, y_pos, win,wall_2.sp, 0, 1 ,1);
     }
 }
 void SnakeSFMLView::draw_apple(int row, int col, int x_pos, int y_pos, sf::RenderWindow &win)
 {
     if(board.check_for_apple(row, col))
     {
-        draw_object(x_pos, y_pos, win,apple.sp);
+        draw_object(x_pos, y_pos, win,apple.sp, 0, 1, 1);
     }
 }
 void SnakeSFMLView::draw_grass(int x_pos, int y_pos, sf::RenderWindow &win)
 {
-    draw_object(x_pos, y_pos, win,grass.sp);
+    draw_object(x_pos, y_pos, win,grass.sp, 0, 1, 1);
 }
 
-void SnakeSFMLView::draw_snakeBody(int currentCell, int x_pos, int y_pos, sf::RenderWindow &win)
+void SnakeSFMLView::draw_snakeBody(int x_pos, int y_pos, sf::RenderWindow &win)
 {
-    if(currentCell == snake.get_snake_head() or currentCell == snake.get_snake_tail())
-        return;
-    std::vector<int> snakeCells = snake.get_snakeBody();
-    int previousCell=-1;
-    int nextCell=-1;
-    for(int index=0; index<snakeCells.size(); index++)
+    draw_object(x_pos, y_pos, win, snakeBody.sp, 0,1, 1);
+}
+
+void SnakeSFMLView::snakeTail_facing(float &rotationInDegrees, float &factorX, float &factorY)
+{
+    int index = static_cast<int>(snake.get_snakeBody().size())-2;
+    bool bodyOnRight = snake.get_snakeBody()[index] == snake.get_snake_tail() + 1;
+    bool bodyOnLeft = snake.get_snakeBody()[index] == snake.get_snake_tail() - 1;
+    bool bodyAbove = snake.get_snakeBody()[index] / MAP_SIZE - 1 == snake.get_snake_tail() / MAP_SIZE;
+    bool bodyBelow = snake.get_snakeBody()[index] / MAP_SIZE + 1 == snake.get_snake_tail() / MAP_SIZE;
+    bool bodyInSameColumn = snake.get_snakeBody()[index] % MAP_SIZE == snake.get_snake_tail() % MAP_SIZE;
+
+    if(bodyOnRight)
     {
-        if(snakeCells[index] == currentCell)
-        {
-            previousCell = snakeCells[index-1];
-            nextCell = snakeCells[index+1];
-        }
+        rotationInDegrees = 0;
+        factorX = 1;
+        factorY = 1;
     }
-    if(currentCell % MAP_SIZE == previousCell % MAP_SIZE and currentCell % MAP_SIZE == nextCell % MAP_SIZE)
+    if(bodyOnLeft)
     {
-        draw_object(x_pos, y_pos, win, snakeBodyVertical.sp);
+        rotationInDegrees = 180;
+        factorX = 1;
+        factorY = 1;
     }
-    else if(currentCell / MAP_SIZE == previousCell / MAP_SIZE and currentCell / MAP_SIZE == nextCell / MAP_SIZE)
+
+    if(bodyAbove and bodyInSameColumn)
     {
-        draw_object(x_pos, y_pos, win, snakeBodyHorizontal.sp);
+        rotationInDegrees = 90;
+        factorX = 1;
+        factorY = 80.0f/60.0f*-1.0f;
     }
-    else
+    if(bodyBelow and bodyInSameColumn)
     {
-        draw_connector(x_pos, y_pos, win, currentCell, previousCell, nextCell);
+        rotationInDegrees = 270;
+        factorX = 1;
+        factorY = 80.0f/60.0f*-1.0f;
     }
 }
 
-void SnakeSFMLView::draw_connector(int x_pos, int y_pos, sf::RenderWindow &win, int currentCell, int previousCell, int nextCell)
+void SnakeSFMLView::draw_snakeTail(int x_pos, int y_pos, sf::RenderWindow &win)
 {
-    if(nextCell == currentCell+1 and previousCell % MAP_SIZE == currentCell % MAP_SIZE)
-    {
-        snakeConnector.sp.setRotation(0);
-        snakeConnector.sp.setScale(1, 1);
-    }
-    if(nextCell == currentCell-1 and previousCell % MAP_SIZE == currentCell % MAP_SIZE)
-    {
-        snakeConnector.sp.setRotation(180);
-        snakeConnector.sp.setScale(1, 1);
-    }
-    if(nextCell % MAP_SIZE == currentCell % MAP_SIZE and previousCell == currentCell - 1)
-    {
-        snakeConnector.sp.setScale(-1, -1);
-        snakeConnector.sp.setRotation(0);
-    }
-    if(nextCell % MAP_SIZE == currentCell % MAP_SIZE and previousCell == currentCell + 1)
-    {
-        snakeConnector.sp.setRotation(-90);
-    }
-    draw_object(x_pos, y_pos, win, snakeConnector.sp);
+    float rotationInDegrees, factorX, factorY;
+    snakeTail_facing(rotationInDegrees, factorX, factorY);
+    draw_object(x_pos,y_pos,win, snakeTail.sp, rotationInDegrees, factorX, factorY);
 }
