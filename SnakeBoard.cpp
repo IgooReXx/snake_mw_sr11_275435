@@ -51,7 +51,7 @@ void SnakeBoard::debug_display()
 void SnakeBoard::update()
 {
     set_update_speed();
-    if(clock.getElapsedTime() >= sf::milliseconds(time))
+    if(clock.getElapsedTime() >= sf::milliseconds(dt))
     {
         collision_logic();
         snake.update();
@@ -161,9 +161,9 @@ void SnakeBoard::collision_logic()
     if(snake_collision())
         snake.kill_snake();
     if(map_boundary_collision())
-    {/*snake.kill_snake();*/}
+        snake.kill_snake();
     if(wall_collision())
-    {/*snake.kill_snake();*/}
+        snake.kill_snake();
     if(apple_collision())
     {
         snake.set_apple_eaten();
@@ -258,9 +258,9 @@ GameDifficulty SnakeBoard::get_GameDifficulty() {
 void SnakeBoard::set_update_speed()
 {
     if(get_GameDifficulty() == EASY)
-        time = 300;
+        dt = 300;
     else if(get_GameDifficulty() == NORMAL)
-        time = 200;
+        dt = 200;
     else if(get_GameDifficulty() == HARD)
-        time = 100;
+        dt = 100;
 }

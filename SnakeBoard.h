@@ -27,7 +27,7 @@ class SnakeBoard {
     int points;
     GameStatus status;
     GameDifficulty difficulty;
-    int time;
+    int dt;
 
 
     void replace_apple();
@@ -47,7 +47,7 @@ class SnakeBoard {
 
 public:
 
-    SnakeBoard(Snake &s);
+    explicit SnakeBoard(Snake &s);
     void debug_display();
     void update();
     bool check_for_wall(int row, int col);
