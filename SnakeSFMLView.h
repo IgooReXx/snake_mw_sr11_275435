@@ -23,6 +23,11 @@ class SnakeSFMLView {
     Snake &snake;
     SnakeBoard &board;
 
+    sf::RectangleShape menuButtonPlay;
+    sf::RectangleShape menuButtonEasy;
+    sf::RectangleShape menuButtonNormal;
+    sf::RectangleShape menuButtonHard;
+
     TxSp end_screen_win;
     TxSp end_screen_loss;
     TxSp snakeHead;
@@ -38,6 +43,7 @@ class SnakeSFMLView {
     int cellHeight;
 
     void load_all_txsp();
+    void display_menu_screen(sf::RenderWindow &win);
     void display_end_screen(sf::RenderWindow &win);
     void snakeHead_facing(float &rotationInDegrees, float &factorX, float &factorY);
     void draw_object(int x_pos, int y_pos, sf::RenderWindow &win, sf::Sprite objectSprite, float rotationInDegrees, float factorX, float factorY);
@@ -50,12 +56,15 @@ class SnakeSFMLView {
     void snakeTail_facing(float &rotationInDegrees, float &factorX, float &factorY);
     void draw_snakeTail(int x_pos, int y_pos, sf::RenderWindow &win);
 
-
 public:
 
     SnakeSFMLView(Snake &s1, SnakeBoard &b1);
     void draw(sf::RenderWindow &win);
 
+    sf::FloatRect get_menuButtonPlay();
+    sf::FloatRect get_menuButtonEasy();
+    sf::FloatRect get_menuButtonNormal();
+    sf::FloatRect get_menuButtonHard();
 };
 
 

@@ -15,6 +15,7 @@ struct Cell {
 };
 
 enum GameStatus {RUNNING, MENU};
+enum GameDifficulty {EASY, NORMAL, HARD};
 
 class SnakeBoard {
 
@@ -25,8 +26,10 @@ class SnakeBoard {
     bool wasUpdated;
     int points;
     GameStatus status;
+    GameDifficulty difficulty;
+    int time;
 
-    void place_apple(int row, int col);
+
     void replace_apple();
     bool wall_collision();
     bool apple_collision();
@@ -39,6 +42,7 @@ class SnakeBoard {
     void remove_snake_cells(std::vector<int> &availableCells);
     void remove_wall_cells(std::vector<int> &availableCells);
     void remove_apple_cells(std::vector<int> &availableCells);
+    void set_update_speed();
 
 
 public:
@@ -51,7 +55,11 @@ public:
     bool get_wasUpdated();
     void reset_wasUpdated();
     int get_points();
-    int get_apple_pos();
+    GameStatus get_status();
+    void set_status_running();
+
+    void set_GameDifficulty(GameDifficulty Difficulty);
+    GameDifficulty get_GameDifficulty();
 };
 
 

@@ -11,12 +11,14 @@
 
 SnakeBoard::SnakeBoard(Snake &s) : snake(s)
 {
+    set_GameDifficulty(EASY);
     place_walls();
     wasUpdated = false;
     points = 600;
-    status = RUNNING;
+    status = MENU;
     apple.push_back(-1);
     replace_apple();
+    set_update_speed();
 }
 
 void SnakeBoard::debug_display()
@@ -48,7 +50,8 @@ void SnakeBoard::debug_display()
 
 void SnakeBoard::update()
 {
-    if(clock.getElapsedTime() >= sf::milliseconds(200))
+    set_update_speed();
+    if(clock.getElapsedTime() >= sf::milliseconds(time))
     {
         collision_logic();
         snake.update();
@@ -57,16 +60,6 @@ void SnakeBoard::update()
         if(points > 0)
             points -=1;
     }
-}
-
-int SnakeBoard::get_apple_pos()
-{
-    return apple.front();
-}
-
-void SnakeBoard::place_apple(int row, int col)
-{
-    apple.push_back(row * MAP_SIZE + col);
 }
 
 bool SnakeBoard::check_for_apple(int row, int col)
@@ -241,4 +234,33 @@ void SnakeBoard::place_walls()
     walls.push_back(78);
     walls.push_back(87);
     walls.push_back(88);
+}
+
+GameStatus SnakeBoard::get_status()
+{
+    return status;
+}
+
+void SnakeBoard::set_status_running()
+{
+    status = RUNNING;
+}
+
+void SnakeBoard::set_GameDifficulty(GameDifficulty Difficulty)
+{
+    difficulty = Difficulty;
+}
+
+GameDifficulty SnakeBoard::get_GameDifficulty() {
+    return difficulty;
+}
+
+void SnakeBoard::set_update_speed()
+{
+    if(get_GameDifficulty() == EASY)
+        time = 300;
+    else if(get_GameDifficulty() == NORMAL)
+        time = 200;
+    else if(get_GameDifficulty() == HARD)
+        time = 100;
 }

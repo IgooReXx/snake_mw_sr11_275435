@@ -18,6 +18,7 @@ class SnakeSFMLController {
     bool keyRegistered;
 
     Facing choose_facing(sf::Event &event);
+    bool mouse_is_within_button(float mouseXPos, float mouseYPos, sf::FloatRect button);
 
 public:
 
@@ -25,7 +26,7 @@ public:
     void play(sf::Event &event);
     bool get_keyRegistered();
     void reset_keyRegistered();
-
+    void menu(sf::Event &event);
 
 };
 

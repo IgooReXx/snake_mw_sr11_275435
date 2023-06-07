@@ -26,12 +26,16 @@ int main() {
         {
             if (event.type == sf::Event::Closed)
                 window.close();
+            else if (event.type == sf::Event::MouseButtonPressed and board.get_status() == MENU)
+            {
+                ctrl.menu(event);
+            }
             else if(event.type == sf::Event::KeyPressed and !ctrl.get_keyRegistered())
             {
                 ctrl.play(event);
             }
         }
-        if(snake.get_status()==ALIVE)
+        if(board.get_status() == RUNNING and snake.get_status() == ALIVE)
             board.update();
 
         if(board.get_wasUpdated())

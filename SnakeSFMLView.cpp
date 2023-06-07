@@ -10,6 +10,20 @@ SnakeSFMLView::SnakeSFMLView(Snake &s1, SnakeBoard &b1) : snake(s1), board(b1)
     cellWidth = WINDOW_WIDTH/MAP_SIZE;
     cellHeight = WINDOW_HEIGHT/MAP_SIZE;
 
+    menuButtonPlay = sf::RectangleShape(sf::Vector2f(300, 100));
+    menuButtonEasy = sf::RectangleShape(sf::Vector2f(100, 100));
+    menuButtonNormal = sf::RectangleShape(sf::Vector2f(100, 100));
+    menuButtonHard = sf::RectangleShape(sf::Vector2f(100, 100));
+    menuButtonPlay.setOrigin(300.0f/2, 100.0f/2);
+    menuButtonEasy.setOrigin(100.0f/2,100.0f/2);
+    menuButtonNormal.setOrigin(100.0f/2,100.0f/2);
+    menuButtonHard.setOrigin(100.0f/2,100.0f/2);
+
+    menuButtonPlay.setPosition(800.0f/2, 600.0f/2);
+    menuButtonEasy.setPosition(0+50, 0+50);
+    menuButtonNormal.setPosition(200, 50);
+    menuButtonHard.setPosition(350, 50);
+
     load_all_txsp();
 }
 
@@ -17,6 +31,12 @@ void SnakeSFMLView::draw(sf::RenderWindow &win)
 {
     int x_pos = 0;
     int y_pos = 0;
+
+    if(board.get_status() == MENU)
+    {
+        display_menu_screen(win);
+        return;
+    }
 
     for(int row=0; row<MAP_SIZE; ++row)
     {
@@ -219,4 +239,56 @@ void SnakeSFMLView::draw_snakeTail(int x_pos, int y_pos, sf::RenderWindow &win)
     float rotationInDegrees, factorX, factorY;
     snakeTail_facing(rotationInDegrees, factorX, factorY);
     draw_object(x_pos,y_pos,win, snakeTail.sp, rotationInDegrees, factorX, factorY);
+}
+
+void SnakeSFMLView::display_menu_screen(sf::RenderWindow &win)
+{
+    switch(board.get_GameDifficulty())
+    {
+        case EASY:
+        {
+            menuButtonEasy.setFillColor(sf::Color::Red);
+            menuButtonNormal.setFillColor(sf::Color::White);
+            menuButtonHard.setFillColor(sf::Color::White);
+            break;
+        }
+        case NORMAL:
+        {
+            menuButtonEasy.setFillColor(sf::Color::White);
+            menuButtonNormal.setFillColor(sf::Color::Red);
+            menuButtonHard.setFillColor(sf::Color::White);
+            break;
+        }
+        case HARD:
+        {
+            menuButtonEasy.setFillColor(sf::Color::White);
+            menuButtonNormal.setFillColor(sf::Color::White);
+            menuButtonHard.setFillColor(sf::Color::Red);
+            break;
+        }
+    }
+    win.draw(menuButtonPlay);
+    win.draw(menuButtonEasy);
+    win.draw(menuButtonNormal);
+    win.draw(menuButtonHard);
+}
+
+sf::FloatRect SnakeSFMLView::get_menuButtonPlay()
+{
+    return menuButtonPlay.getGlobalBounds();
+}
+
+sf::FloatRect SnakeSFMLView::get_menuButtonEasy()
+{
+    return menuButtonEasy.getGlobalBounds();
+}
+
+sf::FloatRect SnakeSFMLView::get_menuButtonNormal()
+{
+    return menuButtonNormal.getGlobalBounds();
+}
+
+sf::FloatRect SnakeSFMLView::get_menuButtonHard()
+{
+    return menuButtonHard.getGlobalBounds();
 }
