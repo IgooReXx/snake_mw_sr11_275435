@@ -23,6 +23,8 @@ class SnakeSFMLView {
     Snake &snake;
     SnakeBoard &board;
 
+    sf::Font font;
+
     sf::RectangleShape menuBackground;
     sf::RectangleShape menuButtonPlay;
     sf::RectangleShape menuButtonEasy;

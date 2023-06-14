@@ -51,12 +51,15 @@ Facing SnakeSFMLController::choose_facing(sf::Event &event)
 void SnakeSFMLController::menu(sf::Event &event) {
     if(event.mouseButton.button != sf::Mouse::Left)
         return;
+
     float mouseXPos = event.mouseButton.x;
     float mouseYPos = event.mouseButton.y;
+
     sf::FloatRect buttonPlay = view.get_menuButtonPlay();
     sf::FloatRect buttonEasy = view.get_menuButtonEasy();
     sf::FloatRect buttonNormal = view.get_menuButtonNormal();
     sf::FloatRect buttonHard = view.get_menuButtonHard();
+
     if(mouse_is_within_button(mouseXPos, mouseYPos, buttonPlay))
     {
         board.set_status_running();

@@ -18,6 +18,8 @@ SnakeSFMLView::SnakeSFMLView(Snake &s1, SnakeBoard &b1) : snake(s1), board(b1)
     menuButtonHard = sf::RectangleShape(sf::Vector2f(100, 100));
 
     load_all_txsp();
+    if(font.loadFromFile("../OpenSans-Bold.ttf"))
+    {} // https://fonts.google.com/specimen/Open+Sans/about?preview.text=1234567890&preview.text_type=custom
 }
 
 void SnakeSFMLView::draw(sf::RenderWindow &win)
@@ -106,10 +108,40 @@ void SnakeSFMLView::load_all_txsp()
 
 void SnakeSFMLView::display_end_screen(sf::RenderWindow &win)
 {
-    TxSp* displayed_end_screen;
-    displayed_end_screen=&end_screen_loss;
-    displayed_end_screen->sp.setPosition(WINDOW_WIDTH/2-50, WINDOW_HEIGHT/2-50);
-    win.draw(displayed_end_screen->sp);
+    sf::Text scoreTable;
+    scoreTable.setString("BEST SCORES:");
+    scoreTable.setFont(font);
+    scoreTable.setFillColor(sf::Color::Red);
+    scoreTable.setCharacterSize(60);
+    scoreTable.setOrigin(scoreTable.getGlobalBounds().width/2, scoreTable.getGlobalBounds().height/2);
+    scoreTable.setPosition(WINDOW_WIDTH/2, scoreTable.getGlobalBounds().height/2);
+    win.draw(scoreTable);
+
+    sf::Text displayed_score;
+    displayed_score.setFont(font);
+    displayed_score.setCharacterSize(60);
+    displayed_score.setFillColor(sf::Color::Black);
+    displayed_score.setOrigin(displayed_score.getGlobalBounds().width/2, displayed_score.getGlobalBounds().height/2);
+
+    if(board.get_scoreBoardUpdated == false)
+        board.update_bestScores();
+    const int* bestScores = board.get_bestScores();
+    int x_pos=WINDOW_WIDTH/2;
+    int y_pos=displayed_score.getGlobalBounds().height/2+scoreTable.getGlobalBounds().height;
+    displayed_score.setPosition(x_pos, y_pos);
+
+    for(int place = 1; place<=10; place++)
+    {
+        std::string score;
+        score.append(std::to_string(place));
+        score.append(". ");
+        score.append(std::to_string(bestScores[place-1]));
+        displayed_score.setString(score);
+        displayed_score.setPosition(x_pos-displayed_score.getGlobalBounds().width/2, y_pos);
+        win.draw(displayed_score);
+        displayed_score.setPosition(x_pos-displayed_score.getGlobalBounds().width/2, y_pos+=displayed_score.getGlobalBounds().height);
+    }
+
 }
 
 void SnakeSFMLView::draw_logic(int row, int col, int x_pos, int y_pos, sf::RenderWindow &win)
@@ -151,6 +183,7 @@ void SnakeSFMLView::draw_grass(int x_pos, int y_pos, sf::RenderWindow &win)
 {
     draw_object(x_pos, y_pos, win,grass.sp, 0, 1, 1);
 }
+
 void SnakeSFMLView::draw_snake(int row, int col, int x_pos, int y_pos, sf::RenderWindow &win)
 {
     set_snake_origin();

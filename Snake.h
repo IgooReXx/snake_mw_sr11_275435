@@ -6,14 +6,14 @@
 #define SNAKE_SNAKE_H
 #include <vector>
 
-enum Facing {UP, LEFT, DOWN, RIGHT};
+enum Facing {UP, LEFT, DOWN, RIGHT}; // Snake's head facing - movement will proceed in this direction
 enum Status {ALIVE, DEAD};
 
 class Snake {
-    std::vector<int> snakeBody;
+    std::vector<int> snakeBody; // contains all snake cells (including head and tail)
     Facing facing;
     Status status;
-    bool apple_eaten;
+    bool apple_eaten; // Used in updating snake's length (if true - last cell in snakeBody is not
 
 public:
 

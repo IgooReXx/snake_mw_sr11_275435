@@ -7,18 +7,24 @@
 #include <chrono>
 #include <algorithm>
 #include <random>
+#include <fstream>
+#include <string>
 
 
 SnakeBoard::SnakeBoard(Snake &s) : snake(s)
 {
+    for(int place=0; place < 10; place++)
+        bestScores[place]=0;
     set_GameDifficulty(EASY);
     place_walls();
     wasUpdated = false;
+    scoreBoardUpdated = false;
     points = 600;
     status = MENU;
     apple.push_back(-1);
     replace_apple();
     set_update_speed();
+    load_bestScores();
 }
 
 void SnakeBoard::debug_display()
@@ -50,15 +56,13 @@ void SnakeBoard::debug_display()
 
 void SnakeBoard::update()
 {
-    set_update_speed();
     if(clock.getElapsedTime() >= sf::milliseconds(dt))
     {
         collision_logic();
-        snake.update();
+        if(snake.get_status() != DEAD)
+            snake.update();
         clock.restart();
         wasUpdated = true;
-        if(points > 0)
-            points -=1;
     }
 }
 
@@ -264,3 +268,44 @@ void SnakeBoard::set_update_speed()
     else if(get_GameDifficulty() == HARD)
         dt = 100;
 }
+
+const int* SnakeBoard::get_bestScores() {
+    return bestScores;
+}
+
+void SnakeBoard::load_bestScores()
+{
+    std::fstream scores_file;
+    scores_file.open("../bestScores.txt", std::ios::out);
+    std::string str_score;
+    int score;
+    int place=0;
+    while(std::getline(scores_file, str_score))
+    {
+        score = stoi(str_score);
+        bestScores[place] = score;
+        place++;
+    }
+}
+
+void SnakeBoard::update_bestScores()
+{
+    scoreBoardUpdated=true;
+    for(int place=0; place<10; place++)
+    {
+        if(points > bestScores[place])
+        {
+            bestScores[place]=points;
+            break;
+        }
+    }
+
+    std::ofstream scores_file;
+    scores_file.open ("../bestScores.txt", std::ios::in);
+    for(int place=0; place<10; place++)
+    {
+        scores_file << bestScores[place] << std::endl;
+    }
+    scores_file.close();
+}
+

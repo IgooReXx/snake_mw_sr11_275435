@@ -24,10 +24,12 @@ class SnakeBoard {
     std::vector<int> apple;
     sf::Clock clock;
     bool wasUpdated;
+    bool scoreBoardUpdated;
     int points;
     GameStatus status;
     GameDifficulty difficulty;
     int dt;
+    int bestScores[10];
 
 
     void replace_apple();
@@ -44,6 +46,7 @@ class SnakeBoard {
     void remove_apple_cells(std::vector<int> &availableCells);
     void set_update_speed();
 
+    void load_bestScores();
 
 public:
 
@@ -60,6 +63,10 @@ public:
 
     void set_GameDifficulty(GameDifficulty Difficulty);
     GameDifficulty get_GameDifficulty();
+
+    const int* get_bestScores();
+
+    void update_bestScores();
 };
 
 
