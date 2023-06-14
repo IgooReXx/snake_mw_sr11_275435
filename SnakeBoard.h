@@ -44,8 +44,7 @@ class SnakeBoard {
     void remove_snake_cells(std::vector<int> &availableCells);
     void remove_wall_cells(std::vector<int> &availableCells);
     void remove_apple_cells(std::vector<int> &availableCells);
-    void set_update_speed();
-
+    void add_points();
     void load_bestScores();
 
 public:
@@ -57,9 +56,10 @@ public:
     bool check_for_apple(int row, int col);
     bool get_wasUpdated();
     void reset_wasUpdated();
-    int get_points();
     GameStatus get_status();
     void set_status_running();
+
+    void set_update_speed();
 
     void set_GameDifficulty(GameDifficulty Difficulty);
     GameDifficulty get_GameDifficulty();
@@ -67,6 +67,7 @@ public:
     const int* get_bestScores();
 
     void update_bestScores();
+    bool get_scoreBoardUpdated();
 };
 
 

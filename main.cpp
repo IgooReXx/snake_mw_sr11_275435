@@ -8,7 +8,7 @@ int main() {
 
     Snake snake;
     SnakeBoard board(snake);
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Snake");
+    sf::RenderWindow window(sf::VideoMode(800, 600), L"Karp jest król wód, jak lew jest król dżungli");
     window.setVerticalSyncEnabled(false);
     window.setFramerateLimit(60);
 
@@ -26,6 +26,8 @@ int main() {
         {
             if (event.type == sf::Event::Closed)
                 window.close();
+            if(snake.get_status()==DEAD)
+                continue;
             else if (event.type == sf::Event::MouseButtonPressed and board.get_status() == MENU)
             {
                 ctrl.menu(event);

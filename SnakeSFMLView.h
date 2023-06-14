@@ -76,6 +76,9 @@ class SnakeSFMLView {
     void set_menuButtons_color();
     void draw_menuButtons(sf::RenderWindow &win);
 
+    void set_topText_visuals(sf::Text &text);
+    void set_scoreText_visuals(sf::Text &text);
+
 public:
 
     SnakeSFMLView(Snake &s1, SnakeBoard &b1);

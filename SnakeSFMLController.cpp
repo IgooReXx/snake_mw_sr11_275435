@@ -76,6 +76,7 @@ void SnakeSFMLController::menu(sf::Event &event) {
     {
         board.set_GameDifficulty(HARD);
     }
+    board.set_update_speed();
 }
 
 bool SnakeSFMLController::mouse_is_within_button(float mouseXPos, float mouseYPos, sf::FloatRect button)

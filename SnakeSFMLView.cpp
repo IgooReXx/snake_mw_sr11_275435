@@ -109,21 +109,13 @@ void SnakeSFMLView::load_all_txsp()
 void SnakeSFMLView::display_end_screen(sf::RenderWindow &win)
 {
     sf::Text scoreTable;
-    scoreTable.setString("BEST SCORES:");
-    scoreTable.setFont(font);
-    scoreTable.setFillColor(sf::Color::Red);
-    scoreTable.setCharacterSize(60);
-    scoreTable.setOrigin(scoreTable.getGlobalBounds().width/2, scoreTable.getGlobalBounds().height/2);
-    scoreTable.setPosition(WINDOW_WIDTH/2, scoreTable.getGlobalBounds().height/2);
+    set_topText_visuals(scoreTable);
     win.draw(scoreTable);
 
     sf::Text displayed_score;
-    displayed_score.setFont(font);
-    displayed_score.setCharacterSize(60);
-    displayed_score.setFillColor(sf::Color::Black);
-    displayed_score.setOrigin(displayed_score.getGlobalBounds().width/2, displayed_score.getGlobalBounds().height/2);
+    set_scoreText_visuals(displayed_score);
 
-    if(board.get_scoreBoardUpdated == false)
+    if(board.get_scoreBoardUpdated() == false)
         board.update_bestScores();
     const int* bestScores = board.get_bestScores();
     int x_pos=WINDOW_WIDTH/2;
@@ -142,6 +134,24 @@ void SnakeSFMLView::display_end_screen(sf::RenderWindow &win)
         displayed_score.setPosition(x_pos-displayed_score.getGlobalBounds().width/2, y_pos+=displayed_score.getGlobalBounds().height);
     }
 
+}
+
+void SnakeSFMLView::set_topText_visuals(sf::Text &text)
+{
+    text.setString("BEST SCORES:");
+    text.setFont(font);
+    text.setFillColor(sf::Color::Red);
+    text.setCharacterSize(60);
+    text.setOrigin(text.getGlobalBounds().width/2, text.getGlobalBounds().height/2);
+    text.setPosition(WINDOW_WIDTH/2, text.getGlobalBounds().height/2);
+}
+
+void SnakeSFMLView::set_scoreText_visuals(sf::Text &text)
+{
+    text.setFont(font);
+    text.setCharacterSize(60);
+    text.setFillColor(sf::Color::Black);
+    text.setOrigin(text.getGlobalBounds().width/2, text.getGlobalBounds().height/2);
 }
 
 void SnakeSFMLView::draw_logic(int row, int col, int x_pos, int y_pos, sf::RenderWindow &win)

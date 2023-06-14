@@ -171,7 +171,7 @@ void SnakeBoard::collision_logic()
     if(apple_collision())
     {
         snake.set_apple_eaten();
-        points +=100;
+        add_points();
         replace_apple();
     }
 }
@@ -184,11 +184,6 @@ bool SnakeBoard::get_wasUpdated()
 void SnakeBoard::reset_wasUpdated()
 {
     wasUpdated = false;
-}
-
-int SnakeBoard::get_points()
-{
-    return points;
 }
 
 void SnakeBoard::remove_occupied_cells(std::vector<int> &availableCells)
@@ -276,7 +271,12 @@ const int* SnakeBoard::get_bestScores() {
 void SnakeBoard::load_bestScores()
 {
     std::fstream scores_file;
-    scores_file.open("../bestScores.txt", std::ios::out);
+    scores_file.open("../bestScores.txt", std::ios::in);
+    if(!scores_file.is_open())
+    {
+        std::cerr << "Cannot open file bestScores.txt\n";
+        exit(-1);
+    }
     std::string str_score;
     int score;
     int place=0;
@@ -291,21 +291,47 @@ void SnakeBoard::load_bestScores()
 void SnakeBoard::update_bestScores()
 {
     scoreBoardUpdated=true;
-    for(int place=0; place<10; place++)
-    {
-        if(points > bestScores[place])
-        {
-            bestScores[place]=points;
-            break;
-        }
-    }
 
     std::ofstream scores_file;
-    scores_file.open ("../bestScores.txt", std::ios::in);
-    for(int place=0; place<10; place++)
+    scores_file.open ("../bestScores.txt", std::ios::out);
+    if(!scores_file.is_open())
     {
-        scores_file << bestScores[place] << std::endl;
+        std::cerr << "Cannot open file bestScores.txt\n";
+        exit(-1);
+    }
+    auto is_greater = [points = this->points](int bestScores_score)
+    {return points > bestScores_score;};
+
+    auto place = std::find_if(std::begin(bestScores), std::end(bestScores), is_greater);
+    if(place == std::end(bestScores))
+        return;
+    std::move_backward(place, std::end(bestScores)-1, std::end(bestScores));
+    *place = points;
+
+    for(int index=0; index<10; index++)
+    {
+        scores_file << bestScores[index] << std::endl;
     }
     scores_file.close();
+}
+
+bool SnakeBoard::get_scoreBoardUpdated() {
+    return scoreBoardUpdated;
+}
+
+void SnakeBoard::add_points()
+{
+    if(difficulty == EASY)
+    {
+        points+=100;
+    }
+    else if(difficulty == NORMAL)
+    {
+        points+=200;
+    }
+    else if(difficulty == HARD)
+    {
+        points+=300;
+    }
 }
 
